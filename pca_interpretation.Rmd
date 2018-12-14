@@ -33,3 +33,4 @@ ggplot()+geom_path(data = circ_data,aes(circ_data[,1],circ_data[,2]))
   # geom_point(data = as.data.frame(pca$rotation),aes(x = pca$rotation[,1],y = pca$rotation[,2]),col = "red")+geom_text_repel()
 ```
 We will breifly state the theory from the paper with slight modification of notation. We will use conventional linear algebra notations against those used in the paper for matrix factorizations.
+# This is the change I made.
