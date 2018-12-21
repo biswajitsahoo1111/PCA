@@ -1,5 +1,7 @@
+# Read the comments to get information about relevant figures in origianl paper.
 library(ggplot2)
 library(ggrepel)
+
 
 X = read.csv("pca_abdi_ex1.csv",header = T)
 
@@ -106,3 +108,18 @@ ggplot() + geom_path(data = data.frame(a = cos(x),b = sin(x)),
              aes(-cor_loading[1,],-cor_loading[2,]))+
   geom_text_repel(aes(-cor_loading[1,],-cor_loading[2,],
                       label = names(food)[3:9]))
+
+###################################
+# Random effect model
+x_recon = array(rep(0,12*7),dim = c(12,7))
+press = rep(0,7)
+for (j in 1:7){
+  for (i in 1:12){
+    pca = prcomp(cent_food[-i,],scale = F)
+    #x_trans = food[i,3:9] %*% pca$rotation[,1]
+    x_recon[i,]= as.matrix(cent_food[i,]) %*% pca$rotation[,1:j] %*% t(pca$rotation[,1:j])
+  }
+  press[j] = sum((cent_food-x_recon)^2)
+}
+#sum((cent_food-x_recon)^2)
+#sum((food[,3:9]-x_recon)^2)

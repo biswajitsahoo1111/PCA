@@ -1,0 +1,18 @@
+---
+title: "pca_part_2"
+author: "Biswajit Sahoo"
+date: "December 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
+
+* Part-I: Basic Theory of PCA
+* Part-III: Reproducing results of a published paper on PCA
+
+In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
+
+In this post readers can find code snippets for R. Equivalent MATLAB codes for the same can be obtained from this link. 

@@ -1,0 +1,21 @@
+---
+title: "pca_part_3"
+author: "Biswajit Sahoo"
+date: "December 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
+
+* Part-I: Basic Theory of PCA
+* Part-II: PCA Implementation with and without using built-in functions
+
+
+In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per google scholar data.
+
+This post contains code snippets in R.Equivalent MATLAB codes for the same can be obtained from this link. 
+
+# Structure of the paper

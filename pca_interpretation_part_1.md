@@ -1,6 +1,7 @@
--   First post will discuss theory and discuss a simple problem
--   Second post will discuss manual and builtin implementation
--   Third post will reproduce Abdi's paper.
+To make the post of a readable size, it has been divided into 3 parts.
+\* First post will discuss theory and discuss a simple problem \* Second
+post will discuss manual and builtin implementation \* Part III -
+Reproducing the results of a published paper
 
 Principal Component Analysis (PCA) is one of the most popular
 dimensionality reduction techniques. Though its origin dates back to
@@ -32,7 +33,7 @@ $$\\textbf{S} = \\frac{1}{n-1}\\textbf{X}^T\\textbf{X}$$
 
     ggplot()+geom_path(data = circ_data,aes(circ_data[,1],circ_data[,2]))
 
-![](pca_interpretation_files/figure-markdown_strict/unnamed-chunk-2-1.png)
+![](pca_interpretation_part_1_files/figure-markdown_strict/unnamed-chunk-2-1.png)
 
       # geom_point(data = as.data.frame(pca$rotation),aes(x = pca$rotation[,1],y = pca$rotation[,2]),col = "red")+geom_text_repel()
 
