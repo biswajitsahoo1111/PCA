@@ -131,24 +131,131 @@ $(document).ready(function () {
 
 <p>This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below.</p>
 <ul>
-<li>Part-I: Basic Theory of PCA</li>
-<li>Part-III: Reproducing results of a published paper on PCA</li>
+<li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/">Part-I: Basic Theory of PCA</a></li>
+<li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/">Part-III: Reproducing results of a published paper on PCA</a></li>
 </ul>
 <p>In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency.</p>
-<p>In this post readers can find code snippets for R. Equivalent MATLAB codes for the same can be obtained from this link.</p>
-<div id="principal-component-analysis" class="section level1">
-<h1>Principal Component Analysis</h1>
-<div id="theory" class="section level2">
-<h2>Theory:</h2>
-<p>The usual convention is to place variables as columns and different observations as rows (Data frames in R follow this convention). For example, let’s suppose we are collecting data about daily weather for a year. Our variables of interest may include, maximum temperature in a day, minimum temperature, humidity, max. wind spped, etc. For every day, we have to collect observations for each of these variables. In vector form, our data point for one day will contain number of observations equal to the number of variables under study and this becomes one row of our data matrix. Assuming that we are observing 10 variables everyday, our data matrix for one year (assuming it’s not a leap year) will contain 365 rows and 10 columns. Once data matrix is obtained, further analysis is done on this data matrix to obtain important hidden information regarding the data. We will use notations from matrix theory to simplify our analysis.</p>
-<p>Let be the data matrix of size <span class="math inline">\(n\times p\)</span>, where is the number of data points and is the number of variables. We can assume without any loss of generality that is centered, meaning its column means are zero. This only shifts the data towards the origin without changing their relative orientation. So if originally is not centerd, it is first centered befor doing PCA. From now onwards we will assume that is always centered.</p>
-<p>Variance of a variable (a column)in <span class="math inline">\(\textbf{X}\)</span> is equal to sum of squares of entries (because the column is centered) of that column divided by (n - 1) to make it unbiased. So sum of variance of all variables is <span class="math inline">\(\frac{1}{n - 1}\)</span> times sum of squares of all elements of the matrix . Readers who are familiar with matrix norms would instantly recongnize that total variance is <span class="math inline">\(\frac{1}{n - 1}\)</span> times the square of <strong>Frobenius norm</strong> of <span class="math inline">\(\textbf{X}\)</span>.</p>
-<p>Total variance before transformation = <span class="math display">\[\frac{1}{n-1}\sum_{i,j}{x_{ij}^2}=\frac{1}{n-1}\|\textbf{X}\|_{F}^2\]</span></p>
-<p>The aim of PCA is to transform the data in such a way that along first principal direction, variance of transformed data is maximum. It subsequently finds second principal direction orthogonal to the first one in such a way that it explains maximum of the remaining variance among all possible direction in the orthogonal subspace.</p>
-<p>Covariance matrix () is defined as</p>
-<p>Eigen values of are times higher than eigen values of covariance matrix . Let the eigenvector matrix is , where each column is an eigenvector corresponding to an eigenvalue. The eigenvectors are arranged in such a way that first column is the eigenvector corresponding to largest eigenvector, second column (second eigenvector) corresponds to second largest eigenvalue and so on.</p>
-<p>The first step before applying PCA is to center the data. After this there are two different Covariance PCA Correlation PCA Some common terminology associated with PCA: Factor score Loading Inertial</p>
+<p>In this post readers can find code snippets for R. Equivalent <a href="https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf">MATLAB codes</a> for the same can be obtained from this <a href="https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf">link</a>.</p>
+<p>We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this dataset and compare the result.</p>
+<div id="load-data" class="section level3">
+<h3>Load Data</h3>
+<pre class="r"><code>#Load abdi food data
+(food = read.csv(&quot;pca_abdi_food.csv&quot;,header= T))</code></pre>
+<pre><code>##           class children bread vegetables fruit meat poultry milk wine
+## 1   Blue_collar        2   332        428   354 1437     526  247  427
+## 2  White_collar        2   293        559   388 1527     567  239  258
+## 3   Upper_class        2   372        767   562 1948     927  235  433
+## 4   Blue_collar        3   406        563   341 1507     544  324  407
+## 5  White_collar        3   386        608   396 1501     558  319  363
+## 6   Upper_class        3   438        843   689 2345    1148  243  341
+## 7   Blue_collar        4   534        660   367 1620     638  414  407
+## 8  White_collar        4   460        699   484 1856     762  400  416
+## 9   Upper_class        4   385        789   621 2366    1149  304  282
+## 10  Blue_collar        5   655        776   423 1848     759  495  486
+## 11 White_collar        5   584        995   548 2056     893  518  319
+## 12  Upper_class        5   515       1097   887 2630    1167  561  284</code></pre>
+<pre class="r"><code># Centerd data matrix
+cent_food = scale(food[,3:9],scale = F)
+# Scaled data matrix
+scale_food = scale(food[,3:9],scale = T)</code></pre>
 </div>
+<div id="covariance-pca" class="section level2">
+<h2>Covariance PCA</h2>
+<div id="using-built-in-function" class="section level3">
+<h3>Using built-in function</h3>
+<pre class="r"><code># Using built-in function
+pca_food_cov = prcomp(food[,3:9],scale = F)
+# Loading scores (we have printed only four columns out of seven)
+(round(pca_food_cov$rotation[,1:4],2))</code></pre>
+<pre><code>##              PC1   PC2   PC3   PC4
+## bread       0.07 -0.58 -0.40  0.11
+## vegetables  0.33 -0.41  0.29  0.61
+## fruit       0.30  0.10  0.34 -0.40
+## meat        0.75  0.11 -0.07 -0.29
+## poultry     0.47  0.24 -0.38  0.33
+## milk        0.09 -0.63  0.23 -0.41
+## wine       -0.06 -0.14 -0.66 -0.31</code></pre>
+<pre class="r"><code># Factor score (we have printed only four PCs out of seven)
+(round(pca_food_cov$x[,1:4],2))</code></pre>
+<pre><code>##           PC1     PC2     PC3    PC4
+##  [1,] -635.05  120.89  -21.14 -68.97
+##  [2,] -488.56  142.33  132.37  34.91
+##  [3,]  112.03  139.75  -61.86  44.19
+##  [4,] -520.01  -12.05    2.85 -13.70
+##  [5,] -485.94   -1.17   65.75  11.51
+##  [6,]  588.17  188.44  -71.85  28.56
+##  [7,] -333.95 -144.54  -34.94  10.07
+##  [8,]  -57.51  -42.86  -26.26 -46.55
+##  [9,]  571.32  206.76  -38.45   3.69
+## [10,]  -39.38 -264.47 -126.43 -12.74
+## [11,]  296.04 -235.92   58.84  87.43
+## [12,]  992.83  -97.15  121.13 -78.39</code></pre>
+<pre class="r"><code># Variances using built-in function
+(round(pca_food_cov$sdev^2,2))</code></pre>
+<pre><code>## [1] 274831.02  26415.99   6254.11   2299.90   2090.20    338.39     65.81</code></pre>
+</div>
+<div id="performing-pca-manually-using-svd" class="section level3">
+<h3>Performing PCA manually using SVD</h3>
+<pre class="r"><code>cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
+                              byrow = T)
+svd_food = svd(cent_food)</code></pre>
+<pre class="r"><code>## Table 14
+# Eigenvalues
+(Eigenvalues = (svd_food$d)^2)</code></pre>
+<pre><code>## [1] 3023141.2354  290575.8390   68795.2333   25298.9496   22992.2474
+## [6]    3722.3214     723.9238</code></pre>
+<pre class="r"><code># Another way of getting the same result
+(Eigenvalues_diff = diag(cov(pca_food_cov$x)*11))</code></pre>
+<pre><code>##          PC1          PC2          PC3          PC4          PC5 
+## 3023141.2354  290575.8390   68795.2333   25298.9496   22992.2474 
+##          PC6          PC7 
+##    3722.3214     723.9238</code></pre>
+<pre class="r"><code># Percentage contribution of each PC
+(round(Eigenvalues/sum(Eigenvalues),2))</code></pre>
+<pre><code>## [1] 0.88 0.08 0.02 0.01 0.01 0.00 0.00</code></pre>
+<pre class="r"><code># Cumulative sum of eigen values
+(round(cumsum(Eigenvalues),2))</code></pre>
+<pre><code>## [1] 3023141 3313717 3382512 3407811 3430804 3434526 3435250</code></pre>
+<pre class="r"><code># Cumulative percentage
+(round(cumsum(Eigenvalues)/sum(Eigenvalues),2))</code></pre>
+<pre><code>## [1] 0.88 0.96 0.98 0.99 1.00 1.00 1.00</code></pre>
+<pre class="r"><code># RESS
+RESS = array(rep(0,7))
+for (i in 1:7){
+  RESS[i] = sum(Eigenvalues)-sum(Eigenvalues[1:i])
+}
+RESS</code></pre>
+<pre><code>## [1] 412108.5146 121532.6756  52737.4423  27438.4927   4446.2453    723.9238
+## [7]      0.0000</code></pre>
+<pre class="r"><code># RESS/sum of eigenvalues
+round(RESS/sum(Eigenvalues),2)</code></pre>
+<pre><code>## [1] 0.12 0.04 0.02 0.01 0.00 0.00 0.00</code></pre>
+</div>
+<div id="using-eigen-decomopositionnot-recommended" class="section level3">
+<h3>Using Eigen-decomoposition(Not recommended)</h3>
+<p>Show the total variance etc.</p>
+</div>
+</div>
+<div id="correlation-pca" class="section level2">
+<h2>Correlation PCA</h2>
+<p>Different ways to obtain correlation matrix.</p>
+</div>
+<div id="using-built-in-function-1" class="section level2">
+<h2>Using built-in function</h2>
+<div id="using-svd" class="section level3">
+<h3>Using SVD</h3>
+</div>
+<div id="using-eigen-decomposition" class="section level3">
+<h3>Using eigen-decomposition</h3>
+<p>Please comment below if you find any errors.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ol style="list-style-type: decimal">
+<li>I.T. Jolliffe, Principal component analysis, 2nd ed, Springer, New York,2002.</li>
+<li>Abdi, H., &amp; Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459.</li>
+</ol>
 </div>
 
 

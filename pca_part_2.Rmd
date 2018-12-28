@@ -10,12 +10,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
-* Part-I: Basic Theory of PCA
-* Part-III: Reproducing results of a published paper on PCA
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/)
 
 In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
 
-In this post readers can find code snippets for R. Equivalent MATLAB codes for the same can be obtained from this link. 
+In this post readers can find code snippets for R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) for the same can be obtained from this [link](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf). 
 
 We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this dataset and compare the result.
 
@@ -23,61 +23,117 @@ We will use French food data form reference [2]. Refer to the paper to know abou
 
 ```{r}
 #Load abdi food data
-food = read.csv("pca_abdi_food.csv",header = T)
+(food = read.csv("pca_abdi_food.csv",header= T))
+# Centerd data matrix
+cent_food = scale(food[,3:9],scale = F)
+# Scaled data matrix
+scale_food = scale(food[,3:9],scale = T)
 ```
+
 ## Covariance PCA
+
 ### Using built-in function
+
 ```{r}
+# Using built-in function
 pca_food_cov = prcomp(food[,3:9],scale = F)
+# Loading scores (we have printed only four columns out of seven)
+(round(pca_food_cov$rotation[,1:4],2))
+# Factor score (we have printed only four PCs out of seven)
 ```
-### Using SVD
+We have printed only four columns of loading scores out of seven.
 ```{r}
-cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
-                              byrow = T)
-svd_food = svd(cent_food)
+(round(pca_food_cov$x[,1:4],2))
 ```
+We have printed only four principal components out of seven.
+```{r}
+# Variances using built-in function
+(round(pca_food_cov$sdev^2,2))
+# Total variance
+(sum(round(pca_food_cov$sdev^2,2)))
+```
+
+
+### Performing covariance PCA manually using SVD
 
 ```{r}
-## Table 14
-# Eigenvalues
-(Eigenvalues = (svd_food$d)^2)
-# Another way of getting the same result
-(Eigenvalues_diff = diag(cov(pca_food_cov$x)*11))
-# Percentage contribution of each PC
-(round(Eigenvalues/sum(Eigenvalues),2))
-# Cumulative sum of eigen values
-(round(cumsum(Eigenvalues),2))
-# Cumulative percentage
-(round(cumsum(Eigenvalues)/sum(Eigenvalues),2))
-# RESS
-RESS = array(rep(0,7))
-for (i in 1:7){
-  RESS[i] = sum(Eigenvalues)-sum(Eigenvalues[1:i])
-}
-RESS
-# RESS/sum of eigenvalues
-round(RESS/sum(Eigenvalues),2)
+svd_food_cov = svd(cent_food)
+# Loading scores
+round(svd_food_cov$v[,1:4],2) # We have printed only four columns
+# Factor scores
+round((cent_food %*% svd_food_cov$v)[,1:4],2) # only 4 columns printed
+# Variance of principal components
+round(svd_food_cov$d^2/11,2)
 ```
+Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
 
-
-
-
-
-
-
-### Using Eigen-decomoposition(Not recommended)
-Show the total variance etc.
+### Performing covariance PCA using Eigen-decomoposition(Not recommended)
+This procedure is not recommended because forming a covariance matrix is computaionally not efficient for large matrices if data matrix contins smaller entries. So doing eigen analysis on covariance matrix may give erroneous results. However, for our example we can use it to obtain results.
+```{r}
+eigen_food_cov = eigen(cov(cent_food))
+# Loading scores
+round(eigen_food_cov$vectors[,1:4],2)
+# Variance along principal components
+round(eigen_food_cov$values,2)
+```
+Instead of using the 'cov()' command to find the covariance matrix manually and perform its eigen analysis.
+```{r}
+cov_matrix_manual_food = (1/11)*t(cent_food) %*% cent_food
+eigen_food_new = eigen(cov_matrix_manual_food)
+# Loading scores
+round(eigen_food_new$vectors[,1:4],2)
+# Variance along principal components
+round(eigen_food_new$values,2)
+```
+There are also different ways to find total variance of the data matrix. We will explore some of the options.
+```{r}
+# Total varaiance before transformation
+sum(diag(cov(cent_food)))
+```
+Note that total variance is invariant to translations. So calculating the total variance on raw data will also give the same answer. Check it to convince yourself.
 
 ## Correlation PCA
-Different ways to obtain correlation matrix.
 
-## Using built-in function
+When PCA is performed on a scaled data matrix (each variable is centered as well as variance of each variable is one), it is called correlation PCA. Before discussing correlation PCA we will take some time to see different ways in which we can obtain correlation matrix. 
 
+### Different ways to obtain correlation matrix.
 
-### Using SVD
+```{r}
+# Using built-in command
+round(cor(food[,3:9]),2)[,1:4] # We have printed only four columns
+# manually
+round((1/11)*t(scale_food) %*% scale_food,2)[,1:4]
+```
+
+## Performing correlation PCA using built-in function
+```{r}
+pca_food_cor = prcomp(food[,3:9],scale = T)
+# Loading scores
+round(pca_food_cor$rotation[,1:4],2) # Printed only four
+# Factor scores
+round(pca_food_cor$x[,1:4],2)
+# Variances along principal componentes
+round(pca_food_cor$sdev^2,2)
+# Sum of vairances
+sum(pca_food_cor$sdev^2)
+```
+
+### Performing covariance PCA manually using SVD
+
+```{r}
+svd_food_cor = svd((1/sqrt(11))*scale_food)
+# Loading scores
+round(svd_food_cor$v[,1:4],2)
+# Factor scores
+round((scale_food %*% svd_food_cor$v)[,1:4],2)
+# Variance along each principcal component
+round(svd_food_cor$d^2,2)
+```
+
 
 ### Using eigen-decomposition
 
+Please comment below if you find any errors.
 
 ## References
 

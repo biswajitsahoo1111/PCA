@@ -2,6 +2,26 @@
 library(ggplot2)
 library(ggrepel)
 ##################################
+# Part-II
+food = read.csv("pca_abdi_food.csv",header= T)
+# Centerd matrix
+cent_food = scale(food[,3:9],scale = F)
+# Scaled matrix
+scale_food = scale(food[,3:9],scale = T)
+
+# Covariance PCA
+# Using built-in function
+pca_food_cov = prcomp(food[,3:9],scale = F)
+# Loading scores (we have plotted only four)
+(round(pca_food_cov$rotation[,1:4],2))
+# Factor score (we have plotted only four PCs)
+(round(pca_food_cov$x[,1:4],2))
+# Variances using built-in function
+(round(pca_food_cov$sdev^2,2))
+
+
+
+
 # Part-III
 # Table 1
 (words = read.csv("pca_abdi_words.csv",header = T))
@@ -149,8 +169,6 @@ ggplot(as.data.frame(rotated_loading_scores$loadings[,1:2]),
   geom_point()+geom_text_repel()+geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
     xlab("Loading score along PC1 after rotation")+
     ylab("Loading score along PC2 after rotation")
-
-
 
 # Example 3
 # French food example (Covariance PCA example)

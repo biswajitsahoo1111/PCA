@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 This post is related to Principal Component Analysis (PCA), one of the most popular dimensionality reduction techiques used in machine learing. The appliction of PCA and its variants are ubiqutous. In almost all softwares, such as MATLAB, R, etc., built-in commands are available to perform PCA. In this post we will show how can we obtain results of PCA from raw data first using and then without using builtin commands. Then we will reproduce the results of a published paper on PCA that is very popular in academic circles. The post is divided into three parts to meake it managable to read. Readers who are totally familiar with PCA should read none and leave the page immediately. Other readers who are familiar with PCA but want to see different implementations, should jump to the part they wish to read. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references for further information. Here is the outline of different parts:  
 
-* Part-I: Basic Theory of PCA
-* Part-II: PCA Implementation with and without using built-in functions
-* Part-III: Reproducing results of a published paper on PCA
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
+* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/)
 
-For Part-II, and Part-III, both MATLAB and R codes are available to reproduce all the results. In this post, let's discuss the theory behind PCA.
+For [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/), both MATLAB and R codes are available to reproduce all the results. [Part-III](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/) contains only R codes. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). In this post, we will discuss the theory behind PCA.
 
 Principal Component Analysis (PCA) is one of the most popular dimensionality reduction techniques. Though its origin dates back to early 19th century, it has never gone out of fashion it seems. Its popularity grows steady as can be gaugesd by the number of papers and articles published related to PCA or its variants. 
 
@@ -63,7 +63,7 @@ The previous equation uses the fact that trace is commutative(i.e.$trace(\textbf
 
 ### Link between total variance and eigenvalues
 
-Total variance is sum of eigen values of covriance matrix $(\textbf{S})$. We will further discuss this point in Part-II.
+Total variance is sum of eigen values of covriance matrix $(\textbf{S})$. We will further discuss this point in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/).
 
 ### Variations in PCA
 Sometimes our data matrix contatins variables that are measured in different units. So we might have to scale the centerd matrix to reduce the effect of variables with large variation. So depending on the matrix on which PCA is performed, it is divided into two types.
@@ -71,7 +71,7 @@ Sometimes our data matrix contatins variables that are measured in different uni
 * Covariance PCA (Data matrix is centered but not scaled)
 * Correlation PCA (Data matrix is centered and scaled)
 
-Examples of these two types can be found in Part-II.
+Examples of these two types can be found in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/).
 
 ##Some common terminology associated with PCA:
 * Factor scores corresponding to a principal component
@@ -97,7 +97,7 @@ This is the eigen-decomposition of $\textbf{X}^T\textbf{X}$. So $\textbf{V}$ is 
 $$\textbf{S} = \frac{1}{n-1}\textbf{X}^T\textbf{X}=\textbf{V}(\frac{1}{n-1}\Sigma^2)\textbf{V}^T$$
 Thus eigenvalues of S are diagonal entries of $(\frac{1}{n-1}\Sigma^2)$. As SVD is computationally efficient, all built-in functions use SVD to find the loading matrix and then use it to find principal components. 
 
-In the interest of keeping the post at a reasonable length, we will stop our exposition of theory here. Whatever we have discussed is only a fraction of everything. Enitre books have been written on PCA. Interseted readers who want to pursue further can refer to the references given here and later to the references given in the references.
+In the interest of keeping the post at a reasonable length, we will stop our exposition of theory here. Whatever we have discussed is only a fraction of everything. Enitre books have been written on PCA. Interseted readers who want to pursue further can refer to the references given here and later to the references given in the references. Please comment below if you find any errors.
 
 ## References
 1. I.T. Jolliffe, Principal component analysis, 2nd ed, Springer, New York,2002.

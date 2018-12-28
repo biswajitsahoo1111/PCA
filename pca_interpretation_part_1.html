@@ -131,11 +131,11 @@ $(document).ready(function () {
 
 <p>This post is related to Principal Component Analysis (PCA), one of the most popular dimensionality reduction techiques used in machine learing. The appliction of PCA and its variants are ubiqutous. In almost all softwares, such as MATLAB, R, etc., built-in commands are available to perform PCA. In this post we will show how can we obtain results of PCA from raw data first using and then without using builtin commands. Then we will reproduce the results of a published paper on PCA that is very popular in academic circles. The post is divided into three parts to meake it managable to read. Readers who are totally familiar with PCA should read none and leave the page immediately. Other readers who are familiar with PCA but want to see different implementations, should jump to the part they wish to read. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references for further information. Here is the outline of different parts:</p>
 <ul>
-<li>Part-I: Basic Theory of PCA</li>
-<li>Part-II: PCA Implementation with and without using built-in functions</li>
-<li>Part-III: Reproducing results of a published paper on PCA</li>
+<li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/">Part-I: Basic Theory of PCA</a></li>
+<li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/">Part-II: PCA Implementation with and without using built-in functions</a></li>
+<li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/">Part-III: Reproducing results of a published paper on PCA</a></li>
 </ul>
-<p>For Part-II, and Part-III, both MATLAB and R codes are available to reproduce all the results. In this post, let’s discuss the theory behind PCA.</p>
+<p>For <a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/">Part-II</a>, both MATLAB and R codes are available to reproduce all the results. <a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/">Part-III</a> contains only R codes. Equivalent <a href="https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf">MATLAB codes</a> can be obtained by using commands of <a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/">Part-II</a>. In this post, we will discuss the theory behind PCA.</p>
 <p>Principal Component Analysis (PCA) is one of the most popular dimensionality reduction techniques. Though its origin dates back to early 19th century, it has never gone out of fashion it seems. Its popularity grows steady as can be gaugesd by the number of papers and articles published related to PCA or its variants.</p>
 <p>All popular programming platforms contain built in functions that perform PCA given a data matrix. In this blog we will use the open source statistical programming enviroment R to demonstrate the result.</p>
 <p>We will also show how we can obtain the results using simple matrix operations without using the builtin function.</p>
@@ -157,7 +157,7 @@ $(document).ready(function () {
 <p>total covariance of <span class="math inline">\(\textbf{Y}\)</span> = <span class="math display">\[trace(\frac{1}{n-1}\textbf{Y}^{T}\textbf{Y})=\frac{1}{n-1}trace((\textbf{P}^T\textbf{X}^{T}\textbf{X})\textbf{P})=\\\frac{1}{n-1}trace((\textbf{P}\textbf{P}^T)\textbf{X}^{T}\textbf{X})=trace(\frac{1}{n-1}\textbf{X}^T\textbf{X})\]</span> The previous equation uses the fact that trace is commutative(i.e.<span class="math inline">\(trace(\textbf{AB})=trace(\textbf{BA})\)</span>) and <span class="math inline">\(\textbf{P}\)</span> is orthogonal (i.e. <span class="math inline">\(\textbf{P}\textbf{P}^T=\textbf{I}\)</span>).</p>
 <div id="link-between-total-variance-and-eigenvalues" class="section level3">
 <h3>Link between total variance and eigenvalues</h3>
-<p>Total variance is sum of eigen values of covriance matrix <span class="math inline">\((\textbf{S})\)</span>. We will further discuss this point in Part-II.</p>
+<p>Total variance is sum of eigen values of covriance matrix <span class="math inline">\((\textbf{S})\)</span>. We will further discuss this point in <a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/">Part-II</a>.</p>
 </div>
 <div id="variations-in-pca" class="section level3">
 <h3>Variations in PCA</h3>
@@ -166,7 +166,7 @@ $(document).ready(function () {
 <li>Covariance PCA (Data matrix is centered but not scaled)</li>
 <li>Correlation PCA (Data matrix is centered and scaled)</li>
 </ul>
-<p>Examples of these two types can be found in Part-II.</p>
+<p>Examples of these two types can be found in <a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/">Part-II</a>.</p>
 </div>
 </div>
 <div id="some-common-terminology-associated-with-pca" class="section level2">
@@ -182,7 +182,7 @@ $(document).ready(function () {
 <ul>
 <li>Inertia</li>
 </ul>
-<p>Frobenius norm of the matrix.</p>
+<p>Square of Frobenius norm of the matrix.</p>
 <div id="how-actually-are-principal-components-computed" class="section level3">
 <h3>How actually are principal components computed</h3>
 <p>The previously stated method of finding eigenvectors of covariance matrix is not computationally effective. In practive, signular value decomposition (SVD) is used to find the matrix <span class="math inline">\(\textbf{P}\)</span>. SVD theorem tells that any real matrix <span class="math inline">\(\textbf{X}\)</span> can be decomposed into three matrices such that <span class="math display">\[ \textbf{X} = \textbf{U}\Sigma\textbf{V}^T\]</span> Where, <span class="math inline">\(\textbf{X}\)</span> is of size <span class="math inline">\(n\times p\)</span>. <span class="math inline">\(\textbf{U}\)</span> and <span class="math inline">\(\textbf{V}\)</span> are orthogonal marices of size <span class="math inline">\(n\times n\)</span> and <span class="math inline">\(p\times p\)</span> respectively. <span class="math inline">\(\Sigma\)</span> is a diagonal matrix of size <span class="math inline">\(n\times p\)</span>.</p>

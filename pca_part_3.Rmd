@@ -8,25 +8,26 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
+This post is Part-III of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
-* Part-I: Basic Theory of PCA
-* Part-II: PCA Implementation with and without using built-in functions
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
+* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/)
 
 
 In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per google scholar data.
 
-This post contains code snippets in R.Equivalent MATLAB codes for the same can be obtained from this link. 
+This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). For figures, the reader has to write his/her own code in MATLAB.
 
 # Structure of the paper
 Along with basic theory the paper contains three examples on PCA, one example on correspondence analysis and one example on multiple factor analysis. In this post we will only focus on PCA examples. 
 
 Data for the examples have been taken from the paper [1]. To get the original source of the data, refer to the paper.
 
-
+To run following R codes seamlessly, readers have to load following three packages. If these packages have not been installed previously use 'install.packages("package_name")' to install those.
 ```{r}
 library(ggplot2)
 library(ggrepel)
+library(raster)
 ```
 ```{r}
 # Table 1
@@ -43,10 +44,11 @@ round(factor_scores_words[,2]^2/sum(factor_scores_words[,2]^2)*100,2)
 # The calculations in above two lines can be done in a single line
 round(factor_scores_words^2/matrix(rep(colSums(factor_scores_words^2),nrow(words)),ncol = 2,byrow = T)*100,2)
 # Squared distance to center of gravity
-(dist = factor_scores_words[,1]^2+factor_scores_words[,2]^2)
+(dist = rowSums(factor_scores_words^2))
 # Ssquared cosine of observations of first PC
-(sq_cos = round(factor_scores_words^2/matrix(rep(dist,2),ncol = 2)*100))# Nan's are prouced because of division by zero.
+(sq_cos = round(factor_scores_words^2/rowSums(factor_scores_words^2)*100))
 ```
+Nan's are prouced because of division by zero.
 ```{r}
 # Figue 1
 p = ggplot(words,aes(x = Lines_in_dict,y = Word_length,label = Words))+
@@ -82,14 +84,14 @@ sur = c(3,12) # It has 3 letter and 12 lines of dictionary entry
 (factor_scores_sur = round(sur_centered %*% pca_words_cov$rotation,2))
 ```
 ### Eigenvalues and variance
-See Part-II for details.
+See [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/) for details.
 Total variance before transformation
 ```{r}
 (total_var_before = round(sum(diag(var(words_centered))),3))
-(total_var_after = round(sum(diag(var(pca_words_cov$x)))))
+(total_var_after = round(sum(diag(var(pca_words_cov$x))),3))
 ```
 Correlation between principal components and original variables
-(In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see Part-I))
+(In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/))
 
 The sum of correlation coefficients between variables and principal components is 1. Intuitively, this means that variables are orthogonally projected onto the principal components. 
 ```{r}
@@ -166,9 +168,8 @@ Again our figure seems upside down than that of the paper. This is a minor discr
 (pca_wine_cor$x[,1:2])
 # Contibution of each observation to principal component
 round(pca_wine_cor$x[,1:2]^2/matrix(rep(colSums(pca_wine_cor$x[,1:2]^2),nrow(wine)),ncol = 2,byrow = T)*100,2)
-dist = pca_wine_cor$x[,1]^2+pca_wine_cor$x[,2]^2
 # Squared cosine of observations of first PC
-(sq_cos = round(pca_wine_cor$x[,1:2]^2/matrix(rep(dist,2),ncol = 2)*100))
+(sq_cos = round(pca_wine_cor$x[,1:2]^2/rowSums(pca_wine_cor$x^2)*100))
 # Loading scores corresponding to first two principal components
 (round(pca_wine_cor$rotation[,1:2],2))
 # Correlation score variables with first two principal compoents
@@ -184,6 +185,7 @@ circle +
   geom_text_repel(aes(corr_score_wine[,1],corr_score_wine[,2],
                       label = c("Hedonic","For Meat","For dessert","Price","Sugar","Alcohol","Acidity")))
 ```
+
 ### Varimax rotation
 
 Rotatioin is applied to loading matrix such that after rotation principal components are interpretable. By interpretable, we mean, some of the loading scores will have higher values and some other loading scores will have lower values. So it can be said that the varibles whose loading scores have higher value, contribute significanty towards principal components as compared to other variables with lesser loading scores. Though rotation works in certain cases, it must be remembered that it is no magic wand for principal component interpretability. One of the popular rotations is Varimax rotation. R has a built-in command to perform varimax rotation. 
@@ -231,8 +233,8 @@ pca_food_cov = prcomp(food[,3:9],scale = F)
 # Contibution of each observation to principal component
 round(pca_food_cov$x[,1:2]^2/matrix(rep(colSums(pca_food_cov$x[,1:2]^2),nrow(food)),ncol = 2,byrow = T)*100,2)
 dist = pca_food_cov$x[,1]^2+pca_food_cov$x[,2]^2
-# Squared cosine of observations of first PC
-(sq_cos = round(pca_food_cov$x[,1:2]^2/matrix(rep(dist,2),ncol = 2)*100))
+# Squared cosine of observations of first PC (rowSums command from 'raster' pcakage has been used)
+(sq_cos = round(pca_food_cov$x[,1:2]^2/rowSums(pca_food_cov$x^2)*100))
 # Table 13
 # squared loading score
 (round(pca_food_cov$rotation[,1:2]^2,2))
@@ -282,8 +284,8 @@ round(RESS/sum(Eigenvalues),2)
 ```
 We have not calculated the value of PRESS in this post as it will require us to consider random models. We will not pursue it here. 
 
-Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through till end.
+Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through till end. Please comment below if you find any errors or omissions.
 
-## References
+## Reference
 
 1. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
