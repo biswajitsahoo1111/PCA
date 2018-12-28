@@ -16,3 +16,70 @@ This post is Part-II of a three part series post on PCA. Other parts of the seri
 In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
 
 In this post readers can find code snippets for R. Equivalent MATLAB codes for the same can be obtained from this link. 
+
+We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this dataset and compare the result.
+
+### Load Data
+
+```{r}
+#Load abdi food data
+food = read.csv("pca_abdi_food.csv",header = T)
+```
+## Covariance PCA
+### Using built-in function
+```{r}
+pca_food_cov = prcomp(food[,3:9],scale = F)
+```
+### Using SVD
+```{r}
+cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
+                              byrow = T)
+svd_food = svd(cent_food)
+```
+
+```{r}
+## Table 14
+# Eigenvalues
+(Eigenvalues = (svd_food$d)^2)
+# Another way of getting the same result
+(Eigenvalues_diff = diag(cov(pca_food_cov$x)*11))
+# Percentage contribution of each PC
+(round(Eigenvalues/sum(Eigenvalues),2))
+# Cumulative sum of eigen values
+(round(cumsum(Eigenvalues),2))
+# Cumulative percentage
+(round(cumsum(Eigenvalues)/sum(Eigenvalues),2))
+# RESS
+RESS = array(rep(0,7))
+for (i in 1:7){
+  RESS[i] = sum(Eigenvalues)-sum(Eigenvalues[1:i])
+}
+RESS
+# RESS/sum of eigenvalues
+round(RESS/sum(Eigenvalues),2)
+```
+
+
+
+
+
+
+
+### Using Eigen-decomoposition(Not recommended)
+Show the total variance etc.
+
+## Correlation PCA
+Different ways to obtain correlation matrix.
+
+## Using built-in function
+
+
+### Using SVD
+
+### Using eigen-decomposition
+
+
+## References
+
+1. I.T. Jolliffe, Principal component analysis, 2nd ed, Springer, New York,2002.
+2. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 

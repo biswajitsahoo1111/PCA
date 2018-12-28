@@ -19,3 +19,271 @@ In this post, we will reproduce the results of a popular paper on PCA. The paper
 This post contains code snippets in R.Equivalent MATLAB codes for the same can be obtained from this link. 
 
 # Structure of the paper
+Along with basic theory the paper contains three examples on PCA, one example on correspondence analysis and one example on multiple factor analysis. In this post we will only focus on PCA examples. 
+
+Data for the examples have been taken from the paper [1]. To get the original source of the data, refer to the paper.
+
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+```
+```{r}
+# Table 1
+# Load data
+(words = read.csv("pca_abdi_words.csv",header = T))
+(words_centered = scale(words[,2:3],scale = F)) # Removing the first column
+pca_words_cov = prcomp(words[,2:3],scale = F) # cov stands for Covariance PCA
+factor_scores_words = pca_words_cov$x
+round(factor_scores_words,2)# Observer that factor scores for PC1 are negatives of what has been given in the paper. This is not a problem as it is negative of the direction given in the paper. It can also be checked that both the principal components are orthogonal.
+sum(factor_scores_words[,1]*factor_scores_words[,2]) # PCs are orthogonal
+# Contibution of each factor (It is defined as square of factor score divided by sum of squares of factor scores in that column)
+round(factor_scores_words[,1]^2/sum(factor_scores_words[,1]^2)*100,2)
+round(factor_scores_words[,2]^2/sum(factor_scores_words[,2]^2)*100,2)
+# The calculations in above two lines can be done in a single line
+round(factor_scores_words^2/matrix(rep(colSums(factor_scores_words^2),nrow(words)),ncol = 2,byrow = T)*100,2)
+# Squared distance to center of gravity
+(dist = factor_scores_words[,1]^2+factor_scores_words[,2]^2)
+# Ssquared cosine of observations of first PC
+(sq_cos = round(factor_scores_words^2/matrix(rep(dist,2),ncol = 2)*100))# Nan's are prouced because of division by zero.
+```
+```{r}
+# Figue 1
+p = ggplot(words,aes(x = Lines_in_dict,y = Word_length,label = Words))+
+  geom_point()+ geom_text_repel()+ 
+  geom_hline(yintercept = 6)+geom_vline(xintercept = 8)+
+  labs(x = "Lines in dictionary",y = "Word length")
+print(p)
+# Show directions of PCs
+# Note that intercept argument in geom_abline considers the line to be at the origin. In our case the data are mean shifted.
+# So we have to adjust the intercept taking new origin into consideration. These adjustments have been made below.
+slope1 = pca_words_cov$rotation[1,1]/pca_words_cov$rotation[2,1] # Slope of first PC
+slope2 = pca_words_cov$rotation[1,2]/pca_words_cov$rotation[2,2] # Slope of second PC
+(new_origin = c(mean(words$Lines_in_dict),mean(words$Word_length)))
+intercept1 = 6 - slope1*8
+intercept2 = 6 - slope2*8
+p+geom_abline(slope = slope1,intercept = intercept1,linetype = "dashed",size = 1.2,col = "red")+
+  geom_abline(slope = slope2,intercept = intercept2,linetype = "dashed",size = 1.2,col = "blue")
+```
+In the above figure red dashed line is the 1st principal component (PC) and blue dahsed line is the 2nd PC.
+
+```{r}
+# Rotated PCs
+# This figure is obtained by plotting facotor scores. Note that we will plot negative of the factor scores of 1st PC to make the figure consistent with the paper.
+ggplot(as.data.frame(pca_words_cov$x),aes(-pca_words_cov$x[,1],pca_words_cov$x[,2],label = words$Words))+
+  geom_point()+geom_text_repel()+geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
+  xlab("Factor score along PC1")+ylab("Factor score along PC2")
+```
+Given a supplimentary point (a point previously not used in finding principal compoents),we have to first center the data point. Its factor scores can then be obtained by multiplying it with the loading matrix.
+```{r}
+# Finding factor score of a new point
+sur = c(3,12) # It has 3 letter and 12 lines of dictionary entry
+(sur_centered = sur - colMeans(words[,2:3]))
+(factor_scores_sur = round(sur_centered %*% pca_words_cov$rotation,2))
+```
+### Eigenvalues and variance
+See Part-II for details.
+Total variance before transformation
+```{r}
+(total_var_before = round(sum(diag(var(words_centered))),3))
+(total_var_after = round(sum(diag(var(pca_words_cov$x)))))
+```
+Correlation between principal components and original variables
+(In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see Part-I))
+
+The sum of correlation coefficients between variables and principal components is 1. Intuitively, this means that variables are orthogonally projected onto the principal components. 
+```{r}
+# Correlation between PCs and original variables
+(cor(pca_words_cov$x,words_centered))
+```
+**Note** that the answers for correlation coefficients don't match with that of the paper. Readers who get actual answers as given in paper are encouraged to comment below the post. However our procedure is correct and it does indeed give the correct answer for supplementary data as described below.
+```{r}
+# Squared correaltion
+(cor(pca_words_cov$x,words_centered)^2)
+# sum of correlation coefficients between variables and principal components is 1
+colSums((cor(pca_words_cov$x,words_centered)^2))
+```
+```{r}
+(loading_matrix = pca_words_cov$rotation)
+```
+
+Correlation score for supplementary variable
+```{r}
+# Supplementary variable (Table 4)
+Frequency = c(8,230,700,1,500,1,9,2,1,700,7,1,4,500,900,3,1,10,1,1)
+Num_entries = c(6,3,12,2,7,1,1,6,1,5,2,1,5,9,7,1,1,4,4,2)
+supp_data = data.frame(Frequency,Num_entries) # Supplementary data
+# Table 5
+supp_data_cent = scale(supp_data,scale = F) # Centered supplementary data
+(corr_score_supp = round(cor(pca_words_cov$x,supp_data),4))
+# Note that correlation doesn't depent on whether supplementary data is centered or not.
+(round(cor(pca_words_cov$x,supp_data_cent),4))
+# Squared correlation
+(round(cor(pca_words_cov$x,supp_data_cent)^2,4))
+(round(colSums(cor(pca_words_cov$x,supp_data_cent)^2),4))
+```
+Correlation circle plot
+```{r}
+# First plot correlation circle
+x = seq(0,2*pi,length.out = 300)
+circle = ggplot() + geom_path(data = data.frame(a = cos(x),b = sin(x)),
+                     aes(cos(x),sin(x)),alpha = 0.3, size = 1.5)+
+            geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
+  annotate("text",x = c(1.08,0.05),y = c(0.05,1.08),label = c("PC1","PC2"),angle = c(0,90))+
+            xlab(NULL)+ylab(NULL)
+# Plotting original variables
+variable_plot_original = circle + geom_point(data = as.data.frame(pca_words_cov$rotation),
+                      aes(pca_words_cov$rotation[,1],pca_words_cov$rotation[,2]))+
+  geom_text_repel(aes(pca_words_cov$rotation[,1],pca_words_cov$rotation[,2],
+                      label = c("Length of words","Number of lines in Dict."))) 
+print(variable_plot_original)
+# Plotting supplementary variables
+variable_plot_original+
+  geom_point(data = as.data.frame(corr_score_supp),
+             aes(corr_score_supp[,1],corr_score_supp[,2]))+
+  geom_text_repel(aes(corr_score_supp[,1],corr_score_supp[,2],
+                      label = c("Frequency","Number of entries"))) 
+```
+
+# Example 2
+
+### Wine example
+```{r}
+# Correlation PCA using wine data 
+# Table 6
+(wine = read.csv("pca_abdi_wine.csv",header = T))
+pca_wine_cor = prcomp(wine[2:8],scale = T)
+ggplot(as.data.frame(pca_wine_cor$x),aes(x = pca_wine_cor$x[,1],y =  pca_wine_cor$x[,2], label = paste0("wine ",1:5)))+
+  geom_point()+geom_text_repel()+ geom_vline(xintercept = 0)+ geom_hline(yintercept = 0)+
+  xlab("Factor score along PC1")+ylab("Factor score along PC2")
+```
+
+Again our figure seems upside down than that of the paper. This is a minor discrepancy. Our 2nd eigen vector is negative of the one considered in paper. We can match the plot with that of the paper by just flipping the second principal compoent but we will not do that here.
+
+```{r}
+# Table 7
+# Factor scores along 1st and 2nd PC
+(pca_wine_cor$x[,1:2])
+# Contibution of each observation to principal component
+round(pca_wine_cor$x[,1:2]^2/matrix(rep(colSums(pca_wine_cor$x[,1:2]^2),nrow(wine)),ncol = 2,byrow = T)*100,2)
+dist = pca_wine_cor$x[,1]^2+pca_wine_cor$x[,2]^2
+# Squared cosine of observations of first PC
+(sq_cos = round(pca_wine_cor$x[,1:2]^2/matrix(rep(dist,2),ncol = 2)*100))
+# Loading scores corresponding to first two principal components
+(round(pca_wine_cor$rotation[,1:2],2))
+# Correlation score variables with first two principal compoents
+(corr_score_wine = round(cor(pca_wine_cor$x,wine[,2:8])[1:2,],2))
+```
+```{r}
+# Correlation circle for wine data
+# Figure 6
+corr_score_wine = t(corr_score_wine)
+circle + 
+  geom_point(data = as.data.frame(corr_score_wine),
+             aes(corr_score_wine[,1],corr_score_wine[,2]))+
+  geom_text_repel(aes(corr_score_wine[,1],corr_score_wine[,2],
+                      label = c("Hedonic","For Meat","For dessert","Price","Sugar","Alcohol","Acidity")))
+```
+### Varimax rotation
+
+Rotatioin is applied to loading matrix such that after rotation principal components are interpretable. By interpretable, we mean, some of the loading scores will have higher values and some other loading scores will have lower values. So it can be said that the varibles whose loading scores have higher value, contribute significanty towards principal components as compared to other variables with lesser loading scores. Though rotation works in certain cases, it must be remembered that it is no magic wand for principal component interpretability. One of the popular rotations is Varimax rotation. R has a built-in command to perform varimax rotation. 
+
+Varimax rotation can be performed on the whole loading matrix or on a few components only. In the paper, varimax has been applied to first two principal compoents.
+```{r}
+# Loading scores of first two principal components
+(round(pca_wine_cor$rotation[,1:2],2))
+# Varimax applied to first two principal components
+rotated_loading_scores = varimax(pca_wine_cor$rotation[,1:2])
+# Loading scores after rotation (Table 10)
+(round(rotated_loading_scores$loadings[,1:2],2))
+# The same result can also be obtained by mulitplying the original loading 
+# matrix by the rotation matrix obtained from varimax
+(round(pca_wine_cor$rotation[,1:2] %*% rotated_loading_scores$rotmat,2))
+
+#Figure 7
+# Plot of loading socres before rotation
+ggplot(as.data.frame(pca_wine_cor$rotation[,1:2]),aes(x = pca_wine_cor$rotation[,1],y = pca_wine_cor$rotation[,2],
+                                                      label = c("Hedonic","For Meat","For dessert","Price","Sugar","Alcohol","Acidity")))+
+  geom_point()+geom_text_repel()+geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
+  xlab("Loading score along PC1")+ylab("Loading score along PC2")
+# Plot of loading scores after rotation
+ggplot(as.data.frame(rotated_loading_scores$loadings[,1:2]),
+                     aes(x = rotated_loading_scores$loadings[,1],
+                         y = rotated_loading_scores$loadings[,2],
+                         label = c("Hedonic","For Meat","For dessert","Price","Sugar","Alcohol","Acidity")))+
+  geom_point()+geom_text_repel()+geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
+    xlab("Loading score along PC1 after rotation")+
+    ylab("Loading score along PC2 after rotation")
+```
+
+# Example 3
+
+### French food example (Covariance PCA example)
+
+```{r}
+# Load data (Table 11) 
+(food = read.csv("pca_abdi_food.csv",header = T))
+pca_food_cov = prcomp(food[,3:9],scale = F)
+
+# Table 12
+# Factor scores
+(factor_scores_food = round(pca_food_cov$x[,1:2],2))
+# Contibution of each observation to principal component
+round(pca_food_cov$x[,1:2]^2/matrix(rep(colSums(pca_food_cov$x[,1:2]^2),nrow(food)),ncol = 2,byrow = T)*100,2)
+dist = pca_food_cov$x[,1]^2+pca_food_cov$x[,2]^2
+# Squared cosine of observations of first PC
+(sq_cos = round(pca_food_cov$x[,1:2]^2/matrix(rep(dist,2),ncol = 2)*100))
+# Table 13
+# squared loading score
+(round(pca_food_cov$rotation[,1:2]^2,2))
+```
+**Note** that this table doesn't match with that of the paper. We will stick to our analysis.
+```{r}
+# Correlation score
+(corr_score_food = round((cor(pca_food_cov$x,food[,3:9])[1:2,]),2))
+# squared correlation score
+(round((cor(pca_food_cov$x,food[,3:9])[1:2,])^2,2))
+# Figure 9
+# Correlation circle for food data
+corr_score_food = t(corr_score_food)
+circle + geom_point(data = as.data.frame(corr_score_food), 
+                    aes(x = corr_score_food[,1],y = corr_score_food[,2]))+
+  geom_text_repel(data = as.data.frame(corr_score_food), 
+                  aes(x = corr_score_food[,1],y = corr_score_food[,2],
+                      label = c("Bread","Vegetables","Fruit","Meat","Poultry","Milk","Wine")))
+```
+Now observe that our correlation circle plot is almost close to that of the papers (though in opposite quadrants. But this is not a problem as we have previously mentioned).
+
+```{r}
+## Table 14
+cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
+                              byrow = T)
+svd_food = svd(cent_food)
+# Eigenvalues
+(Eigenvalues = (svd_food$d)^2)
+```
+**Important Note:** These eigenvalues are not the same as variance of factor scores in principal components. Variance of principal compoenet factor scores can be obtained by dividing the eigenvalues by $(n-1)$, where $n$ is number of data points (in this case $n = 12$). If this point is still not clear, refer to Part-II.
+
+```{r}
+# Percentage contribution of each PC
+(round(Eigenvalues/sum(Eigenvalues),2))
+# Cumulative sum of eigen values
+(round(cumsum(Eigenvalues),2))
+# Cumulative percentage
+(round(cumsum(Eigenvalues)/sum(Eigenvalues),2))
+# RESS (Refer to the paper for a description)
+RESS = array(rep(0,7))
+for (i in 1:7){
+  RESS[i] = sum(Eigenvalues)-sum(Eigenvalues[1:i])
+}
+RESS
+# RESS/sum of eigenvalues
+round(RESS/sum(Eigenvalues),2)
+```
+We have not calculated the value of PRESS in this post as it will require us to consider random models. We will not pursue it here. 
+
+Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through till end.
+
+## References
+
+1. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
