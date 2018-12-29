@@ -14,7 +14,7 @@ This post is Part-III of a three part series post on PCA. Other parts of the ser
 * [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/)
 
 
-In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per google scholar data.
+In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per Google scholar data.
 
 This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). For figures, the reader has to write his/her own code in MATLAB.
 
@@ -48,7 +48,7 @@ round(factor_scores_words^2/matrix(rep(colSums(factor_scores_words^2),nrow(words
 # Ssquared cosine of observations of first PC
 (sq_cos = round(factor_scores_words^2/rowSums(factor_scores_words^2)*100))
 ```
-Nan's are prouced because of division by zero.
+Nan's are produced because of division by zero.
 ```{r}
 # Figue 1
 p = ggplot(words,aes(x = Lines_in_dict,y = Word_length,label = Words))+
@@ -67,7 +67,7 @@ intercept2 = 6 - slope2*8
 p+geom_abline(slope = slope1,intercept = intercept1,linetype = "dashed",size = 1.2,col = "red")+
   geom_abline(slope = slope2,intercept = intercept2,linetype = "dashed",size = 1.2,col = "blue")
 ```
-In the above figure red dashed line is the 1st principal component (PC) and blue dahsed line is the 2nd PC.
+In the above figure red dashed line is the 1st principal component (PC) and blue dashed line is the 2nd PC.
 
 ```{r}
 # Rotated PCs
@@ -76,7 +76,7 @@ ggplot(as.data.frame(pca_words_cov$x),aes(-pca_words_cov$x[,1],pca_words_cov$x[,
   geom_point()+geom_text_repel()+geom_hline(yintercept = 0)+geom_vline(xintercept = 0)+
   xlab("Factor score along PC1")+ylab("Factor score along PC2")
 ```
-Given a supplimentary point (a point previously not used in finding principal compoents),we have to first center the data point. Its factor scores can then be obtained by multiplying it with the loading matrix.
+Given a supplementary point (a point previously not used in finding principal components),we have to first center the data point. Its factor scores can then be obtained by multiplying it with the loading matrix.
 ```{r}
 # Finding factor score of a new point
 sur = c(3,12) # It has 3 letter and 12 lines of dictionary entry
@@ -160,7 +160,7 @@ ggplot(as.data.frame(pca_wine_cor$x),aes(x = pca_wine_cor$x[,1],y =  pca_wine_co
   xlab("Factor score along PC1")+ylab("Factor score along PC2")
 ```
 
-Again our figure seems upside down than that of the paper. This is a minor discrepancy. Our 2nd eigen vector is negative of the one considered in paper. We can match the plot with that of the paper by just flipping the second principal compoent but we will not do that here.
+Again our figure seems upside down than that of the paper. This is a minor discrepancy. Our 2nd eigen vector is negative of the one considered in paper. We can match the plot with that of the paper by just flipping the second principal component but we will not do that here.
 
 ```{r}
 # Table 7
@@ -188,9 +188,9 @@ circle +
 
 ### Varimax rotation
 
-Rotatioin is applied to loading matrix such that after rotation principal components are interpretable. By interpretable, we mean, some of the loading scores will have higher values and some other loading scores will have lower values. So it can be said that the varibles whose loading scores have higher value, contribute significanty towards principal components as compared to other variables with lesser loading scores. Though rotation works in certain cases, it must be remembered that it is no magic wand for principal component interpretability. One of the popular rotations is Varimax rotation. R has a built-in command to perform varimax rotation. 
+Rotation is applied to loading matrix such that after rotation principal components are interpretable. By interpretable, we mean, some of the loading scores will have higher values and some other loading scores will have lower values. So it can be said that the variables whose loading scores have higher value, contribute significantly towards principal components as compared to other variables with lesser loading scores. Though rotation works in certain cases, it must be remembered that it is no magic wand for principal component interpretability. One of the popular rotations is Varimax rotation. R has a built-in command to perform varimax rotation. 
 
-Varimax rotation can be performed on the whole loading matrix or on a few components only. In the paper, varimax has been applied to first two principal compoents.
+Varimax rotation can be performed on the whole loading matrix or on a few components only. In the paper, varimax has been applied to first two principal components.
 ```{r}
 # Loading scores of first two principal components
 (round(pca_wine_cor$rotation[,1:2],2))
@@ -264,7 +264,7 @@ svd_food = svd(cent_food)
 # Eigenvalues
 (Eigenvalues = (svd_food$d)^2)
 ```
-**Important Note:** These eigenvalues are not the same as variance of factor scores in principal components. Variance of principal compoenet factor scores can be obtained by dividing the eigenvalues by $(n-1)$, where $n$ is number of data points (in this case $n = 12$). If this point is still not clear, refer to Part-II.
+**Important Note:** These eigenvalues are not the same as variance of factor scores in principal components. Variance of principal component factor scores can be obtained by dividing the eigenvalues by $(n-1)$, where $n$ is number of data points (in this case $n = 12$). If this point is still not clear, refer to Part-II.
 
 ```{r}
 # Percentage contribution of each PC

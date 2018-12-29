@@ -13,11 +13,11 @@ This post is Part-II of a three part series post on PCA. Other parts of the seri
 * [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
 * [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/)
 
-In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
+In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocate the use of non-built-in functions. Rather, in our opinion, it enhances understanding by knowing what happens under the hood when a built-in function is called. In actual applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
 
 In this post readers can find code snippets for R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) for the same can be obtained from this [link](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf). 
 
-We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this dataset and compare the result.
+We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this data and compare the result.
 
 ### Load Data
 
@@ -53,6 +53,26 @@ We have printed only four principal components out of seven.
 (sum(round(pca_food_cov$sdev^2,2)))
 ```
 
+## Comparison of variance before and after transformation
+
+```{r}
+# Total variance before transformation
+sum(diag(cov(food[,3:9])))
+# Total variance after transformation
+sum(diag(cov(pca_food_cov$x)))
+```
+Another important observation is to see how variance of each variable before transformation changes into variance of principal components. Note that total variance in this process remains same as seen from above codes.
+```{r}
+# Variance along variables before transformation
+round(diag(cov(food[,3:9])),2)
+```
+Note that calculation of variance is unaffected by centering data matrix. So variance of original data matrix as well as centered data matrix is same. Check it for yourself. Now see how PCA transforms these variance.
+```{r}
+# Variance along principal compoennts
+round(diag(cov(pca_food_cov$x)),2)
+# We can obtain the same result using built-in fucntion
+round(pca_food_cov$sdev^2,2)
+```
 
 ### Performing covariance PCA manually using SVD
 
@@ -68,11 +88,14 @@ round(svd_food_cov$d^2/11,2)
 Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
 
 ### Performing covariance PCA using Eigen-decomoposition(Not recommended)
-This procedure is not recommended because forming a covariance matrix is computaionally not efficient for large matrices if data matrix contins smaller entries. So doing eigen analysis on covariance matrix may give erroneous results. However, for our example we can use it to obtain results.
+
+This procedure is not recommended because forming a covariance matrix is computationally not efficient for large matrices if data matrix contains smaller entries. So doing eigen analysis on covariance matrix may give erroneous results. However, for our example we can use it to obtain results.
 ```{r}
 eigen_food_cov = eigen(cov(cent_food))
 # Loading scores
 round(eigen_food_cov$vectors[,1:4],2)
+# Factor scores
+round((cent_food %*% eigen_food_cov$vectors)[,1:4],2)
 # Variance along principal components
 round(eigen_food_cov$values,2)
 ```
@@ -118,22 +141,55 @@ round(pca_food_cor$sdev^2,2)
 sum(pca_food_cor$sdev^2)
 ```
 
+## Comparison of variance before and after transformation
+
+```{r}
+# Total variance before transformation
+sum(diag(cov(scale_food)))
+# Total variance after transformation
+sum(diag(cov(pca_food_cor$x)))
+```
+Another important observation is to see how variance of each variable before transformation changes into variance of principal components. Note that total variance in this process remains same as seen from above codes.
+```{r}
+# Variance along variables before transformation
+round(diag(cov(scale_food)),2)
+```
+This is obvious as we have scaled the matrix. Now see how PCA transforms these variance.
+```{r}
+# Variance along principal compoennts
+round(diag(cov(pca_food_cor$x)),2)
+# We can obtain the same result using built-in fucntion
+round(pca_food_cor$sdev^2,2)
+```
+
 ### Performing covariance PCA manually using SVD
 
 ```{r}
-svd_food_cor = svd((1/sqrt(11))*scale_food)
+svd_food_cor = svd(scale_food)
 # Loading scores
 round(svd_food_cor$v[,1:4],2)
 # Factor scores
 round((scale_food %*% svd_food_cor$v)[,1:4],2)
 # Variance along each principcal component
-round(svd_food_cor$d^2,2)
+round(svd_food_cor$d^2/11,2)
+# Sum of variances
+sum(svd_food_cor$d^2/11)
+```
+Again we have to divide by 11 to get eigenvalues of correlation matrix. Check the formulation of correlation matrix using scaled data matrix to convince yourself. 
+
+### Using eigen-decomposition (Not Recommended)
+
+```{r}
+eigen_food_cor = eigen(cor(food[,3:9]))
+# Loading scores
+round(eigen_food_cor$vectors)
+# Factor scores
+round((scale_food %*% eigen_food_cor$vectors)[,1:4],2)
+# Variances along each principal component
+round(eigen_food_cor$values,2)
 ```
 
-
-### Using eigen-decomposition
-
-Please comment below if you find any errors.
+I hope this post would help clear some of the confusions that a beginner might have while encountering PCA for the first time. Please comment below if you find any errors.
 
 ## References
 
