@@ -162,7 +162,7 @@ round(diag(cov(pca_food_cor$x)),2)
 round(pca_food_cor$sdev^2,2)
 ```
 
-### Performing covariance PCA manually using SVD
+### Performing correlation PCA manually using SVD
 
 ```{r}
 svd_food_cor = svd(scale_food)

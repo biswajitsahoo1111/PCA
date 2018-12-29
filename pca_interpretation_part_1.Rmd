@@ -46,7 +46,7 @@ $$\textbf{Y}_{n\times p}=\textbf{X}_{n\times p}\textbf{P}_{p\times p}$$
 Where $\textbf{Y}$ is the transformed data matrix. The columns of $\textbf{Y}$ are called principal components and $\textbf{P}$ is usually called loading matrix. Our aim is to find matrix $\textbf{P}$. Once we find $\textbf{P}$ we can then find $\textbf{Y}$ just by a matrix multiplication. Though we will not go into to proof here, it can be easily proved (see references), that matrix $\textbf{P}$ is the eigenvector matrix of the covariance matrix. Let's first define covariance matrix. 
 
 Given a data matrix $\textbf{X}$(centered), its covariance matrix $(\textbf{S})$ is defined as
-$$S = \frac{1}{n-1}\textbf{X}^T\textbf{X}$$
+$$\textbf{S} = \frac{1}{n-1}\textbf{X}^T\textbf{X}$$
 As principal directions are orthogonal, we will also require $\textbf{P}$ to be an orthogonal matrix. 
 
 Now, it is straightforward to form the covariance matrix and by placing its eigenvectors as columns, we can find matrix $\textbf{P}$ and consequently the principal components. The eigenvectors are arranged in such a way that first column is the eigenvector corresponding to largest eigenvector, second column (second eigenvector) corresponds to second largest eigenvalue and so on. Here we have assumed that we will always be able to find all the $p$ orthogonal eigenvectors. In fact, we will always be able to find $p$ orthogonal eigenvectors as the matrix is symmetric. It can also be shown that the transformed matrix $\textbf{Y}$ is centered and more remarkably, total variance of columns of $\textbf{Y}$ is same as total variance of columns of $\textbf{X}$. We will prove these two propositions as the proof are short. 

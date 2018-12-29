@@ -134,9 +134,9 @@ $(document).ready(function () {
 <li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/">Part-I: Basic Theory of PCA</a></li>
 <li><a href="https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/">Part-III: Reproducing results of a published paper on PCA</a></li>
 </ul>
-<p>In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocat the use of non-built-in functions. Rather, in our opinion, it enhaces understanding by knowing what happens under the hood when a built-in function is called. In acutal applications, readers should always use built functions as they are robust(almost always) and tested for efficiency.</p>
+<p>In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocate the use of non-built-in functions. Rather, in our opinion, it enhances understanding by knowing what happens under the hood when a built-in function is called. In actual applications, readers should always use built functions as they are robust(almost always) and tested for efficiency.</p>
 <p>In this post readers can find code snippets for R. Equivalent <a href="https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf">MATLAB codes</a> for the same can be obtained from this <a href="https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf">link</a>.</p>
-<p>We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this dataset and compare the result.</p>
+<p>We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this data and compare the result.</p>
 <div id="load-data" class="section level3">
 <h3>Load Data</h3>
 <pre class="r"><code>#Load abdi food data
@@ -215,7 +215,7 @@ round(diag(cov(food[,3:9])),2)</code></pre>
 ##   11480.61   35789.09   27255.45  156618.39   62280.52   13718.75 
 ##       wine 
 ##    5152.63</code></pre>
-<p>Note that calculation of variance is unaffected by centering data matrix. So variance of origianl data matrix as well as centered data matrix is same. Check it for yourself. Now see how PCA transforms these variance.</p>
+<p>Note that calculation of variance is unaffected by centering data matrix. So variance of original data matrix as well as centered data matrix is same. Check it for yourself. Now see how PCA transforms these variance.</p>
 <pre class="r"><code># Variance along principal compoennts
 round(diag(cov(pca_food_cov$x)),2)</code></pre>
 <pre><code>##       PC1       PC2       PC3       PC4       PC5       PC6       PC7 
@@ -258,7 +258,7 @@ round(svd_food_cov$d^2/11,2)</code></pre>
 </div>
 <div id="performing-covariance-pca-using-eigen-decomopositionnot-recommended" class="section level3">
 <h3>Performing covariance PCA using Eigen-decomoposition(Not recommended)</h3>
-<p>This procedure is not recommended because forming a covariance matrix is computaionally not efficient for large matrices if data matrix contins smaller entries. So doing eigen analysis on covariance matrix may give erroneous results. However, for our example we can use it to obtain results.</p>
+<p>This procedure is not recommended because forming a covariance matrix is computationally not efficient for large matrices if data matrix contains smaller entries. So doing eigen analysis on covariance matrix may give erroneous results. However, for our example we can use it to obtain results.</p>
 <pre class="r"><code>eigen_food_cov = eigen(cov(cent_food))
 # Loading scores
 round(eigen_food_cov$vectors[,1:4],2)</code></pre>
@@ -430,10 +430,10 @@ round(svd_food_cor$d^2/11,2)</code></pre>
 <pre class="r"><code># Sum of variances
 sum(svd_food_cor$d^2/11)</code></pre>
 <pre><code>## [1] 7</code></pre>
-<p>Again we have to divide by 11 to get eigenvalues of correaltion matrix. Check the formulation of correlation matrix using scaled data matrix to convince yourself.</p>
+<p>Again we have to divide by 11 to get eigenvalues of correlation matrix. Check the formulation of correlation matrix using scaled data matrix to convince yourself.</p>
 </div>
-<div id="using-eigen-decomposition" class="section level3">
-<h3>Using eigen-decomposition</h3>
+<div id="using-eigen-decomposition-not-recommended" class="section level3">
+<h3>Using eigen-decomposition (Not Recommended)</h3>
 <pre class="r"><code>eigen_food_cor = eigen(cor(food[,3:9]))
 # Loading scores
 round(eigen_food_cor$vectors)</code></pre>
