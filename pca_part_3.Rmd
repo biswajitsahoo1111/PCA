@@ -10,8 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 This post is Part-III of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
-* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
-* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/)
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
+* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/)
 
 
 In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per Google scholar data.
@@ -84,14 +84,14 @@ sur = c(3,12) # It has 3 letter and 12 lines of dictionary entry
 (factor_scores_sur = round(sur_centered %*% pca_words_cov$rotation,2))
 ```
 ### Eigenvalues and variance
-See [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/) for details.
+See [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/) for details.
 Total variance before transformation
 ```{r}
 (total_var_before = round(sum(diag(var(words_centered))),3))
 (total_var_after = round(sum(diag(var(pca_words_cov$x))),3))
 ```
 Correlation between principal components and original variables
-(In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/))
+(In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/))
 
 The sum of correlation coefficients between variables and principal components is 1. Intuitively, this means that variables are orthogonally projected onto the principal components. 
 ```{r}

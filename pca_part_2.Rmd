@@ -10,8 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
-* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
-* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/)
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/)
 
 In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocate the use of non-built-in functions. Rather, in our opinion, it enhances understanding by knowing what happens under the hood when a built-in function is called. In actual applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
 
@@ -85,7 +85,7 @@ round((cent_food %*% svd_food_cov$v)[,1:4],2) # only 4 columns printed
 # Variance of principal components
 round(svd_food_cov$d^2/11,2)
 ```
-Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
+Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
 
 ### Performing covariance PCA using Eigen-decomoposition(Not recommended)
 

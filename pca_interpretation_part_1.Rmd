@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 This post is related to Principal Component Analysis (PCA), one of the most popular dimensionality reduction techniques used in machine learning. The application of PCA and its variants are ubiquitous. In almost all software, such as MATLAB, R, etc., built-in commands are available to perform PCA. In this post we will show how can we obtain results of PCA from raw data first using and then without using built in commands. Then we will reproduce the results of a published paper on PCA that is very popular in academic circles. The post is divided into three parts to make it manageable to read. Readers who are totally familiar with PCA should read none and leave the page immediately. Other readers who are familiar with PCA but want to see different implementations, should jump to the part they wish to read. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references for further information. Here is the outline of different parts:  
 
-* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-i/)
-* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/)
-* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/)
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
+* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/)
 
-For [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/), both MATLAB and R codes are available to reproduce all the results. [Part-III](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-iii/) contains only R codes. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). In this post, we will discuss the theory behind PCA.
+For [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/), both MATLAB and R codes are available to reproduce all the results. [Part-III](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/) contains only R codes. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/). In this post, we will discuss the theory behind PCA.
 
 Principal Component Analysis (PCA) is one of the most popular dimensionality reduction techniques. Though its origin dates back to early 20th century, it has never gone out of fashion it seems. Its popularity grows steady as can be gauged by the number of papers and articles published related to PCA or its variants. 
 
@@ -63,7 +63,7 @@ The previous equation uses the fact that trace is commutative(i.e.$trace(\textbf
 
 ### Link between total variance and eigenvalues
 
-Total variance is sum of eigenvalues of covriance matrix $(\textbf{S})$. We will further discuss this point in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/).
+Total variance is sum of eigenvalues of covriance matrix $(\textbf{S})$. We will further discuss this point in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/).
 
 ### Variations in PCA
 Sometimes our data matrix contains variables that are measured in different units. So we might have to scale the centered matrix to reduce the effect of variables with large variation. So depending on the matrix on which PCA is performed, it is divided into two types.
@@ -71,7 +71,7 @@ Sometimes our data matrix contains variables that are measured in different unit
 * Covariance PCA (Data matrix is centered but not scaled)
 * Correlation PCA (Data matrix is centered and scaled)
 
-Examples of these two types can be found in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/).
+Examples of these two types can be found in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/).
 
 ##Some common terminology associated with PCA:
 * Factor scores corresponding to a principal component
