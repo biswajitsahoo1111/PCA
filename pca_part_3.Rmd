@@ -1,34 +1,47 @@
 ---
-title: "pca_part_3"
-author: "Biswajit Sahoo"
-date: "December 21, 2018"
-output: html_document
+title: Principal Component Analysis - Part III
+author: Biswajit Sahoo
+date: '2019-02-05'
+slug: principal-component-analysis-part-iii
+categories:
+  - Blog
+tags:
+  - PCA
+  - Machine Learning
+  - R
+header:
+  caption: ''
+  image: ''
+Output:
+  html_document:
+   highlight: zenburn
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 This post is Part-III of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
 * [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
 * [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/)
 
 
-In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per Google scholar data.
+In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per Google scholar data (This was the number when this post was first written).
 
-This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). For figures, the reader has to write his/her own code in MATLAB.
+This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can also be written using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/28/principal-component-analysis---part-ii/). For figures, the reader has to write his/her own code in MATLAB.
 
 # Structure of the paper
 Along with basic theory the paper contains three examples on PCA, one example on correspondence analysis and one example on multiple factor analysis. In this post we will only focus on PCA examples. 
 
-Data for the examples have been taken from the paper [1]. To get the original source of the data, refer to the paper.
-
 To run following R codes seamlessly, readers have to load following three packages. If these packages have not been installed previously use 'install.packages("package_name")' to install those.
-```{r}
+```{r, hilang='r'}
 library(ggplot2)
 library(ggrepel)
 library(raster)
 ```
+# How to get data
+
+Data for the examples have been taken from the paper [1]. The data sets are pretty small. So one way to read the data is to create a dataframe itself in R using the values given in paper. Otherwise, the values can first be stored in a csv file and then read into R. We have used the later approach.
+
+**Note**: Throughout this article, additional comments have been made beside code segments. It would be a good idea to read those commented lines along with the codes.
+
 ```{r}
 # Table 1
 # Load data
@@ -98,7 +111,7 @@ The sum of correlation coefficients between variables and principal components i
 # Correlation between PCs and original variables
 (cor(pca_words_cov$x,words_centered))
 ```
-**Note** that the answers for correlation coefficients don't match with that of the paper. Readers who get actual answers as given in paper are encouraged to comment below the post. However our procedure is correct and it does indeed give the correct answer for supplementary data as described below.
+**Note** that the answers for correlation coefficients don't match with that of the paper. Readers who get actual answers as given in paper are encouraged to send me an email using my contact details. However our procedure is correct and it does indeed give the correct answer for supplementary data as described below.
 ```{r}
 # Squared correaltion
 (cor(pca_words_cov$x,words_centered)^2)
@@ -284,8 +297,12 @@ round(RESS/sum(Eigenvalues),2)
 ```
 We have not calculated the value of PRESS in this post as it will require us to consider random models. We will not pursue it here. 
 
-Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through till end. Please comment below if you find any errors or omissions.
+Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through it till end. Please comment using my contact details if you find any errors or omissions.
+
+[R Markdown file for this post](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_3.Rmd)
 
 ## Reference
 
 1. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
+
+Last Modified: 30th September, 2019
