@@ -17,6 +17,8 @@ Output:
    highlight: zenburn
 ---
 
+<center>([Python codes for this post can be found here](https://github.com/biswajitsahoo1111/cbm_codes_open/blob/master/notebooks/PCA_Abdi_in_python.ipynb))</center>
+
 This post is Part-III of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
 * [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/)
