@@ -138,6 +138,7 @@ Correlation between principal components and original variables
 (In the paper,this correlation is also termed loading. But we will strictly reserve the loading term to mean loading matrix $\textbf{P}$ (see [Part-I](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/))
 
 The sum of correlation coefficients between variables and principal components is 1. Intuitively, this means that variables are orthogonally projected onto the principal components.
+
 ### Correlation matrix
 ```{r}
 # Correlation between PCs and original variables
@@ -164,6 +165,7 @@ colSums((cor(pca_words_cov$x,words_centered)^2))
 Frequency = c(8,230,700,1,500,1,9,2,1,700,7,1,4,500,900,3,1,10,1,1)
 Num_entries = c(6,3,12,2,7,1,1,6,1,5,2,1,5,9,7,1,1,4,4,2)
 supp_data = data.frame(Frequency,Num_entries) # Supplementary data
+supp_data
 ```
 ### Centered supplementary data
 ```{r}
@@ -212,7 +214,7 @@ variable_plot_original+
                       label = c("Frequency","Number of entries"))) 
 ```
 
-Observe that our correlation circle plot is flipped about y-axis (i.e., PC2) when compared to the plot given in paper. This is because our first principal component is negative of the one given in paper. So while computing correlation score, this negative eigenvector results in negative correlation scores. Hence, our plot flips about y-axis.
+Observe that our correlation circle plot is flipped about y-axis (i.e., PC2) when compared to the plot given in paper. This is because our first principal component is negative of the one given in paper. So while computing correlation score, this negative principal component results in negative correlation scores. Hence, our plot flips about y-axis.
 
 ## Example 2 (Wine example)
 
@@ -366,7 +368,7 @@ cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
 svd_food = svd(cent_food)
 (Eigenvalues = (svd_food$d)^2)
 ```
-**Important Note:** These eigenvalues are not the same as variance of factor scores in principal components. Variance of principal component factor scores can be obtained by dividing the eigenvalues by $(n-1)$, where $n$ is number of data points (in this case $n = 12$). If this point is still not clear, refer to Part-II.
+**Important Note:** These eigenvalues are not the same as variance of factor scores in principal components. Variance of principal component factor scores can be obtained by dividing the eigenvalues by $(n-1)$, where $n$ is number of data points (in this case $n = 12$). If this point is still not clear, refer to [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/).
 
 ### Percentage contribution of each principal component
 ```{r}
