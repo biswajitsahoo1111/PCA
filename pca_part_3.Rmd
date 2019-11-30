@@ -19,27 +19,27 @@ Output:
 
 <center>([Python codes for this post can be found here](https://github.com/biswajitsahoo1111/cbm_codes_open/blob/master/notebooks/PCA_Abdi_in_python.ipynb))</center>
 
-This post is Part-III of a three part series post on PCA. Other parts of the series can be found at the links below. 
+In this post, we will reproduce the results of a popular paper on PCA. The paper is titled '[Principal component analysis](https://onlinelibrary.wiley.com/doi/full/10.1002/wics.101)' and is authored by [Herve Abdi](https://personal.utdallas.edu/~herve/) and [Lynne J. Williams](https://ljwilliams.github.io/). It got published in 2010 and since then its popularity has only grown. Its number of citations are more than 4800 as per Google Scholar data (This was the number when this post was last revised).
+
+This post is Part-III of a three part series on PCA. Other parts of the series can be found at the links below. 
 
 * [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/)
 * [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/)
 
 
-In this post, we will reproduce the results of a popular paper on PCA. The paper is titled 'Principal component analysis' and is authored by Herve Abdi and Lynne J. Williams. This paper got published in 2010 and since then its popularity has only grown. The paper has been cited 3800+ times as per Google scholar data (This was the number when this post was first written).
-
-This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can also be written using commands of [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/). For figures, the reader has to write his/her own code in MATLAB.
+This post contains code snippets in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be written using commands of [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/). For figures, the reader has to write his/her own code in MATLAB.
 
 ### Structure of the paper
-Along with basic theory the paper contains three examples on PCA, one example on correspondence analysis and one example on multiple factor analysis. In this post we will only focus on PCA examples. 
+Along with basic theory, the paper contains three examples on PCA, one example on correspondence analysis, and one example on multiple factor analysis. We will only focus on PCA examples in this post.
 
-To run following R codes seamlessly, readers have to load following three packages. If these packages have not been installed previously use 'install.packages("package_name")' to install those.
+To run following R codes seamlessly, readers have to load following packages. If these packages have not been installed previously, use `install.packages("package_name")` to install those.
 ```{r, hilang='r'}
 library(ggplot2)
 library(ggrepel)
 ```
 ### How to get data
 
-Data for the examples have been taken from the paper [1]. The data sets are pretty small. So one way to read the data is to create a dataframe itself in R using the values given in paper. Otherwise, the values can first be stored in a csv file and then read into R. We have used the later approach.
+Data for the examples have been taken from the paper [1]. The datasets are pretty small. So one way to read the data is to create a dataframe itself in R using the values given in paper. Otherwise, the values can first be stored in a csv file and then read into R. We have used the later approach.
 
 **Note**: Throughout this article, additional comments have been made beside code segments. It would be a good idea to read those commented lines along with the codes.
 
@@ -360,7 +360,7 @@ Now observe that our correlation circle plot is almost close to that of the pape
 
 ### Eigenvalues
 
-Eigen values of data covariance matrix is square of singular values of centered data matrix. Hence eigen values of data covariance matrix can be obtained as below.
+Eigenvalues of data covariance matrix is square of singular values of centered data matrix. Hence eigenvalues of data covariance matrix can be obtained as below.
 ```{r}
 ## Table 14
 cent_food = food[,3:9]-matrix(rep(colMeans(food[,3:9]),times = 12),nrow = 12,
@@ -405,4 +405,4 @@ Though unusually long, I hope, this post will be of help to (courageous) readers
 
 1. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
 
-Last Modified: 17th November, 2019
+Last updated: 30th November, 2019
