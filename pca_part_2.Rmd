@@ -1,23 +1,30 @@
 ---
-title: "pca_part_2"
-author: "Biswajit Sahoo"
-date: "December 21, 2018"
-output: html_document
+title: Principal Component Analysis - Part II
+author: Biswajit Sahoo
+date: '2019-02-04'
+slug: principal-component-analysis-part-ii
+categories:
+  - Blog
+tags:
+  - PCA
+  - Machine Learning
+  - R
+  - MATLAB
+header:
+  caption: ''
+  image: ''
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 This post is Part-II of a three part series post on PCA. Other parts of the series can be found at the links below. 
 
-* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
-* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/)
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-iii/)
 
-In this post we will first apply built in commands to obtain results and then we will show how the same results can be obtained without using built-in commands. By this post, our aim is not to advocate the use of non-built-in functions. Rather, in our opinion, it enhances understanding by knowing what happens under the hood when a built-in function is called. In actual applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
+In this post, we will first apply built in commands to obtain results and then show how the same results can be obtained without using built-in commands. Through this post our aim is not to advocate the use of non-built-in functions. Rather, in our opinion, it enhances understanding by knowing what happens under the hood when a built-in function is called. In actual applications, readers should always use built functions as they are robust(almost always) and tested for efficiency. 
 
-In this post readers can find code snippets for R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) for the same can be obtained from this [link](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf). 
+This post is written in R. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) for the same can be obtained from this [link](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf). 
 
-We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this data and compare the result.
+We will use French food data form reference [2]. Refer to the paper to know about the original source of the data. We will apply different methods to this data and compare the result. As the dataset is pretty small, one way to load the data into R is to create a dataframe in R using the values in the paper. Another way is to first create a csv file and then read the file into R/MATLAB. We have used the later approach.
 
 ### Load Data
 
@@ -85,7 +92,7 @@ round((cent_food %*% svd_food_cov$v)[,1:4],2) # only 4 columns printed
 # Variance of principal components
 round(svd_food_cov$d^2/11,2)
 ```
-Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
+Our data matrix contains 12 data points. So to find variance of principal components we have to divide the square of the diagonal matrix by 11. To know the theory behind it, refer [Part-I](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/)
 
 ### Performing covariance PCA using Eigen-decomoposition(Not recommended)
 
@@ -189,9 +196,12 @@ round((scale_food %*% eigen_food_cor$vectors)[,1:4],2)
 round(eigen_food_cor$values,2)
 ```
 
-I hope this post would help clear some of the confusions that a beginner might have while encountering PCA for the first time. Please comment below if you find any errors.
+I hope this post would help clear some of the confusions that a beginner might have while encountering PCA for the first time. Please send me a note if you find any errors.
+
+[R Markdown file for this post](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_2.Rmd)
 
 ## References
 
 1. I.T. Jolliffe, Principal component analysis, 2nd ed, Springer, New York,2002.
 2. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
+
