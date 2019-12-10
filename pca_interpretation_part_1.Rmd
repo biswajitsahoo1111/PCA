@@ -1,43 +1,39 @@
 ---
-title: "pca_interpretation_part_I"
-author: "Biswajit Sahoo"
-date: "December 10, 2018"
-output: html_document
+title: Principal Component Analysis - Part I
+author: Biswajit Sahoo
+date: '2019-02-03'
+slug: principal-component-analysis-part-i
+categories:
+  - Blog
+tags:
+  - PCA
+  - Machine Learning
+  - R
+header:
+  caption: ''
+  image: ''
 ---
+In this post, we will discuss about Principal Component Analysis (PCA), one of the most popular dimensionality reduction techniques used in machine learning. The applications of PCA and its variants are ubiquitous. Thus, a through understanding of PCA is considered essential to start one's journey into machine learning. In this and subsequent posts, we will first discuss relevant theory of PCA. Then we will implement PCA from scratch without using any built-in function. This will give us an idea as to what happens under the hood when a built-in function is called in any software environment. Simultaneously, we will also show how to use built-in commands to obtain results. Finally, we will reproduce the results of a popular paper on PCA. Including all this in a single post will make it very very long. Therefore, the post has been divided into three parts. Readers totally familiar with PCA should read none and leave this page immediately to save their precious time. Other readers, who have a passing knowledge of PCA and want to see different implementations, should pick and choose material from different parts as per their need. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references at the end of this post for further information. Here is the outline of different parts:  
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-This post is related to Principal Component Analysis (PCA), one of the most popular dimensionality reduction techniques used in machine learning. The application of PCA and its variants are ubiquitous. In almost all software, such as MATLAB, R, etc., built-in commands are available to perform PCA. In this post we will show how can we obtain results of PCA from raw data first using and then without using built in commands. Then we will reproduce the results of a published paper on PCA that is very popular in academic circles. The post is divided into three parts to make it manageable to read. Readers who are totally familiar with PCA should read none and leave the page immediately. Other readers who are familiar with PCA but want to see different implementations, should jump to the part they wish to read. Absolute beginners should start with Part-I and work their way through gradually. Beginners are also encouraged to explore the references for further information. Here is the outline of different parts:  
+* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-i/)
+* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/)
+* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-iii/)
 
-* [Part-I: Basic Theory of PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-i/)
-* [Part-II: PCA Implementation with and without using built-in functions](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/)
-* [Part-III: Reproducing results of a published paper on PCA](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/)
-
-For [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/), both MATLAB and R codes are available to reproduce all the results. [Part-III](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-iii/) contains only R codes. Equivalent [MATLAB codes](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_part_II_MATLAB_codes.pdf) can be obtained by using commands of [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/). In this post, we will discuss the theory behind PCA.
-
-Principal Component Analysis (PCA) is one of the most popular dimensionality reduction techniques. Though its origin dates back to early 20th century, it has never gone out of fashion it seems. Its popularity grows steady as can be gauged by the number of papers and articles published related to PCA or its variants. 
-
-All popular programming platforms contain built in functions that perform PCA given a data matrix. In this blog we will use the open source statistical programming environment R to demonstrate the result.
-
-We will also show how we can obtain the results using simple matrix operations without using the built-in function. 
-
-In this blog we will reproduce using R all the results of an immensely popular paper on PCA by Abdi et. al. The paper got published in 2010 and within 8 years it has got more than 3800 citations. The data will be taken from the
-paper itself.
+For [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/), both MATLAB and R codes are available to reproduce all the results. [Part-III](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-iii/) contains both R and Python codes to reproduce results of the paper. In this post, we will discuss only the theory behind PCA.
 
 # Principal Component Analysis
 
 ## Theory:
 
-The usual convention is to place variables as columns and different observations as rows (Data frames in R follow this convention).  For example, let's suppose we are collecting data about daily weather for a year. Our variables of interest may include maximum temperature in a day, minimum temperature, humidity, max. wind speed, etc. For every day, we have to collect observations for each of these variables. In vector form, our data point for one day will contain number of observations equal to the number of variables under study and this becomes one row of our data matrix. Assuming that we are observing 10 variables everyday, our data matrix for one year (assuming it's not a leap year) will contain 365 rows and 10 columns. Once data matrix is obtained,  further analysis is done on this data matrix to obtain important hidden information regarding the data. We will use notations from matrix theory to simplify our analysis.
+Given a data matrix, we apply PCA to transform it in a way such that the transformed data reveals maximum information. So we have to first get the data on which we want to perform PCA. The usual convention in storing data is to place variables as columns and different observations as rows (Data frames in R follow this convention by default).  For example, let's suppose we are collecting data about daily weather for a year. Our variables of interest may include maximum temperature in a day, minimum temperature, humidity, max. wind speed, etc. For every day, we have to collect observations for each of these variables. In vector form, our data point for one day will contain number of observations equal to the number of variables under study and this becomes one row of our data matrix. Assuming that we are observing 10 variables everyday, our data matrix for one year (assuming it's not a leap year) will contain 365 rows and 10 columns. Once data matrix is obtained,  further analysis is done on this data matrix to obtain important hidden information regarding the data. We will use notations from matrix theory to simplify our analysis.
 
-Let  be the data matrix of size $n\times p$, where  is the number of data points and  is the number of variables. We can assume without any loss of generality that  is centered, meaning its column means are zero. This only shifts the data towards the origin without changing their relative orientation. So if originally  is not centered, it is first centered before doing PCA. From now onward we will assume that is always centered. 
+Let $\textbf{X}$ be the data matrix of size $n\times p$, where  is the number of data points and  is the number of variables. We can assume without any loss of generality that  is centered, meaning its column means are zero. This only shifts the data towards the origin without changing their relative orientation. So if originally  is not centered, it is first centered before doing PCA. From now onward we will assume that is always centered. 
 
 Variance of a variable (a column)in $\textbf{X}$ is equal to sum of squares of entries (because the column is centered) of that column divided by (n - 1) to make it unbiased. So sum of variance of all variables is $\frac{1}{n - 1}$ times sum of squares of all elements of the matrix . Readers who are familiar with matrix norms would instantly recognize that total variance is $\frac{1}{n - 1}$ times the square of **Frobenius norm** of $\textbf{X}$.
 
 Total variance before transformation = 
 $$\frac{1}{n-1}\sum_{i,j}{x_{ij}^2}=trace(\frac{1}{n-1}\textbf{X}^T\textbf{X})=\frac{1}{n-1}\|\textbf{X}\|_{F}^2$$
-Where trace of a matrix is sum of its diagonal entries.
+Where trace of a matrix is sum of its diagonal entries and $\|\textbf{X}\|_{F}^2$ is the square of **Frobenius norm**.
 
 The aim of PCA is to transform the data in such a way that along first principal direction, variance of transformed data is maximum. It subsequently finds second principal direction orthogonal to the first one in such a way that it explains maximum of the remaining variance among all possible direction in the orthogonal subspace. 
 
@@ -63,7 +59,7 @@ The previous equation uses the fact that trace is commutative(i.e.$trace(\textbf
 
 ### Link between total variance and eigenvalues
 
-Total variance is sum of eigenvalues of covriance matrix $(\textbf{S})$. We will further discuss this point in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/).
+Total variance is sum of eigenvalues of covariance matrix $(\textbf{S})$. We will further discuss this point in [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/).
 
 ### Variations in PCA
 Sometimes our data matrix contains variables that are measured in different units. So we might have to scale the centered matrix to reduce the effect of variables with large variation. So depending on the matrix on which PCA is performed, it is divided into two types.
@@ -71,23 +67,18 @@ Sometimes our data matrix contains variables that are measured in different unit
 * Covariance PCA (Data matrix is centered but not scaled)
 * Correlation PCA (Data matrix is centered and scaled)
 
-Examples of these two types can be found in [Part-II](https://biswajitsahoo1111.wordpress.com/2018/12/29/principal-component-analysis-part-ii/).
+Examples of these two types can be found in [Part-II](https://biswajitsahoo1111.github.io/post/principal-component-analysis-part-ii/).
 
-##Some common terminology associated with PCA:
-* Factor scores corresponding to a principal component
+### Some common terminology associated with PCA
 
-Values of that column of $\textbf{Y}$ that corresponds to the principal component.
+* **Factor scores** corresponding to a principal component: Values of that column of $\textbf{Y}$ that corresponds to the desired principal component.
 
-* Loading score
+* **Loading score**: Values corresponding to a column of $\textbf{P}$. For example,loading scores of variables corresponding to first principal component are the values of the first column of $\textbf{P}$. 
 
-Values corresponding to a column of $\textbf{P}$. For example,loading scores of variables corresponding to first principal component are the values of the first column of $\textbf{P}$. 
-
-* Inertia
-
-Square of Frobenius norm of the matrix. 
+* **Inertia**: Square of Frobenius norm of the matrix. 
 
 ### How actually are principal components computed
-The previously stated method of finding eigenvectors of covariance matrix is not computationally effective. In practice, singular value decomposition (SVD) is used to find the matrix $\textbf{P}$. SVD theorem tells that any real matrix $\textbf{X}$ can be decomposed into three matrices such that
+The previously stated method of finding eigenvectors of covariance matrix is not computationally efficient. In practice, singular value decomposition (SVD) is used to find the matrix $\textbf{P}$. SVD theorem tells that any real matrix $\textbf{X}$ can be decomposed into three matrices such that
 $$ \textbf{X} = \textbf{U}\Sigma\textbf{V}^T$$
 Where, $\textbf{X}$ is of size $n\times p$. $\textbf{U}$ and $\textbf{V}$ are orthogonal matrices of size $n\times n$ and $p\times p$ respectively. $\Sigma$ is a diagonal matrix of size $n\times p$.
 
@@ -97,8 +88,11 @@ This is the eigen-decomposition of $\textbf{X}^T\textbf{X}$. So $\textbf{V}$ is 
 $$\textbf{S} = \frac{1}{n-1}\textbf{X}^T\textbf{X}=\textbf{V}(\frac{1}{n-1}\Sigma^2)\textbf{V}^T$$
 Thus eigenvalues of S are diagonal entries of $(\frac{1}{n-1}\Sigma^2)$. As SVD is computationally efficient, all built-in functions use SVD to find the loading matrix and then use it to find principal components. 
 
-In the interest of keeping the post at a reasonable length, we will stop our exposition of theory here. Whatever we have discussed is only a fraction of everything. Entire books have been written on PCA. Interested readers who want to pursue further can refer to the references given here and later to the references given in the references. Please comment below if you find any errors.
+In the interest of keeping the post at a reasonable length, we will stop our exposition of theory here. Whatever we have discussed is only a fraction of everything. Entire books have been written on PCA. Interested readers who want to pursue further can refer to the references given here and later to the references given in the references. Please send me a note if you find any errors.
+
+[R Markdown file for this post](https://github.com/biswajitsahoo1111/PCA/blob/master/pca_interpretation_part_1.Rmd)
 
 ## References
 1. I.T. Jolliffe, Principal component analysis, 2nd ed, Springer, New York,2002.
 2. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
+
