@@ -33,21 +33,30 @@ This post contains code snippets in R. Equivalent [MATLAB codes](https://github.
 Along with basic theory, the paper contains three examples on PCA, one example on correspondence analysis, and one example on multiple factor analysis. We will only focus on PCA examples in this post.
 
 To run following R codes seamlessly, readers have to load following packages. If these packages have not been installed previously, use `install.packages("package_name")` to install those.
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+```
+
 ```{r, hilang='r'}
 library(ggplot2)
 library(ggrepel)
 ```
 ### How to get data
 
-Data for the examples have been taken from the paper [1]. The datasets are pretty small. So one way to read the data is to create a dataframe itself in R using the values given in paper. Otherwise, the values can first be stored in a csv file and then read into R. We have used the later approach.
+Data for the examples have been taken from the paper [1]. The datasets are pretty small. So one way to read the data is to create a dataframe itself in R using the values given in paper. Otherwise, the values can first be stored in a csv file and then read into R. To make this post self-sufficient, we will adopt the former approach.
 
 **Note**: Throughout this article, additional comments have been made beside code segments. It would be a good idea to read those commented lines along with the codes.
 
 ```{r}
 # Table 1
-# Load data
-(words = read.csv("pca_abdi_words.csv",header = T))
-(words_centered = scale(words[,2:3],scale = F)) # Removing the first column
+# Create a dataframe
+Words = c("Bag", "Across", "On", "Insane", "By", "Monastery", "Relief", "Slope", "Scoundrel", "With", "Neither", "Pretentious", "Solid", "This", "For", "Therefore", "Generality", "Arise", "Blot", "Infectious")
+Word_length = c(3, 6, 2, 6, 2, 9, 6, 5, 9, 4, 7, 11, 5, 4, 3, 9, 10, 5, 4, 10)
+Lines_in_dict = c(14, 7, 11, 9, 9, 4, 8, 11, 5, 8, 2, 4, 12, 9, 8, 1, 4, 13, 15, 6)
+words = data.frame(Words, Word_length, Lines_in_dict, stringsAsFactors = F)
+words
+(words_centered = scale(words[,2:3],scale = F)) # Centering after reemoving the first column
 ```
 ### Covariance PCA
 Covariance PCA uses centered data matrix. But data matrix is not scaled. `prcomp()` centers data by default. 
@@ -221,7 +230,16 @@ Observe that our correlation circle plot is flipped about y-axis (i.e., PC2) whe
 ### Correlation PCA with wine data
 ```{r}
 # Table 6
-(wine = read.csv("pca_abdi_wine.csv",header = T))
+wine_type = c(paste("wine", 1:5, sep = "_"))
+hedonic = c(14, 10, 8, 2, 6)
+for_meat = c(7, 7, 5, 4, 2)
+for_dessert = c(8, 6, 5, 7, 4)
+price = c(7, 4, 10, 16, 13)
+sugar = c(7, 3, 5, 7, 3)
+alcohol = c(13, 14, 12, 11, 10)
+acidity = c(7, 7, 5, 3, 3)
+wine = data.frame(wine_type, hedonic, for_meat, for_dessert, price, sugar, alcohol, acidity, stringsAsFactors = F)
+wine
 pca_wine_cor = prcomp(wine[2:8],scale = T)
 ggplot(as.data.frame(pca_wine_cor$x),aes(x = pca_wine_cor$x[,1],y =  pca_wine_cor$x[,2], label = paste0("wine ",1:5)))+
   geom_point()+geom_text_repel()+ geom_vline(xintercept = 0)+ geom_hline(yintercept = 0)+
@@ -312,8 +330,18 @@ ggplot(as.data.frame(rotated_loading_scores$loadings[,1:2]),
 ### French food example (Covariance PCA example)
 
 ```{r}
-# Load data (Table 11) 
-(food = read.csv("pca_abdi_food.csv",header = T))
+# Table 11 
+class = rep(c("Blue_collar", "White_collar", "Upper_class"), times = 4)
+children = rep(c(2,3,4,5), each = 3)
+bread = c(332, 293, 372, 406, 386, 438, 534, 460, 385, 655, 584, 515)
+vegetables = c(428, 559, 767, 563, 608, 843, 660, 699, 789, 776, 995, 1097)
+fruit = c(354, 388, 562, 341, 396, 689, 367, 484, 621, 423, 548, 887)
+meat = c(1437, 1527, 1948, 1507, 1501, 2345, 1620, 1856, 2366, 1848, 2056, 2630)
+poultry = c(526, 567, 927, 544, 558, 1148, 638, 762, 1149, 759, 893, 1167)
+milk = c(247, 239, 235, 324, 319, 243, 414, 400, 304, 495, 518, 561)
+wine = c(427, 258, 433, 407, 363, 341, 407, 416, 282, 486, 319, 284)
+food = data.frame(class, children, bread, vegetables, fruit, meat, poultry, milk, wine, stringsAsFactors = F)
+food
 pca_food_cov = prcomp(food[,3:9],scale = F)
 ```
 ### Factor scores
@@ -395,7 +423,11 @@ RESS
 ```{r}
 round(RESS/sum(Eigenvalues),2)
 ```
-We have not calculated the value of PRESS in this post as it will require us to consider random models. We will not pursue it here. 
+We will not calculate the value of PRESS in this post as it requires us to consider random models. We will not pursue that here.
+
+```{r}
+sessionInfo()
+```
 
 Though unusually long, I hope, this post will be of help to (courageous) readers who work there way through it till end. Comments regarding any errors or omissions may be sent to [the author's](https://biswajitsahoo1111.github.io/) email.
 
@@ -405,4 +437,4 @@ Though unusually long, I hope, this post will be of help to (courageous) readers
 
 1. Abdi, H., & Williams, L. J. (2010). Principal component analysis. Wiley interdisciplinary reviews: computational statistics, 2(4), 433-459. 
 
-Last updated: 30th November, 2019
+Last updated: 19th January, 2020
