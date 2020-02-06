@@ -19,7 +19,7 @@ Output:
 
 <center>([Python codes for this post can be found here](https://github.com/biswajitsahoo1111/cbm_codes_open/blob/master/notebooks/PCA_Abdi_in_python.ipynb))</center>
 
-In this post, we will reproduce the results of a popular paper on PCA. The paper is titled '[Principal component analysis](https://onlinelibrary.wiley.com/doi/full/10.1002/wics.101)' and is authored by [Herve Abdi](https://personal.utdallas.edu/~herve/) and [Lynne J. Williams](https://ljwilliams.github.io/). It got published in 2010 and since then its popularity has only grown. Its number of citations are more than 4800 as per Google Scholar data (This was the number when this post was last revised).
+In this post, we will reproduce the results of a popular paper on PCA. The paper is titled '[Principal component analysis](https://personal.utdallas.edu/~herve/abdi-awPCA2010.pdf)' and is authored by [Herve Abdi](https://personal.utdallas.edu/~herve/) and [Lynne J. Williams](https://ljwilliams.github.io/). It got published in 2010 and since then its popularity has only grown. Its number of citations are more than 4800 as per Google Scholar data (This was the number when this post was last revised).
 
 This post is Part-III of a three part series on PCA. Other parts of the series can be found at the links below. 
 
